@@ -1,63 +1,26 @@
 <?php
 class Request
 {
-    private $value;
-    private $dataType;
-
-    private function dataType()
+    function get()
     {
-        switch ($this->dataType) {
-            case 'int':
-                $this->value = intval($this->value);
-                break;
-            case 'str':
-                $this->value = strval($this->value);
-                break;
-            case 'float':
-                $this->value = floatval($this->value);
-                break;
-            case 'double':
-                $this->value = doubleval($this->value);
-                break;
-            case 'array':
-                break;
-            default:
-                $this->value = intval($this->value);
-        }
+        $listValue = json_decode(json_encode($_GET));
 
-        return $this->value;
-    }
-
-    function get($name_value, $data_type = "int", $default_value = 0)
-    {
-        $this->value = $default_value;
-
-        if (isset ($_GET[$name_value]))
-            $this->value = $_GET[$name_value];
-
-        $this->dataType = trim(strtolower($data_type));
-        $this->dataType();
-
-        return $this->value;
+        return $listValue;
     }
 
     function post($name_value, $data_type = "int", $default_value = 0)
     {
-        $this->value = $default_value;
+        $listValue = json_decode(json_encode($_POST));
 
-        if (isset ($_POST[$name_value]))
-            $this->value = $_POST[$name_value];
-
-        $this->dataType = trim(strtolower($data_type));
-        $this->dataType();
-
-        return $this->value;
+        return $listValue;
     }
 
 }
 
 $request = new Request();
-$get = $request->get('van');
-var_dump($get);
+$get = $request->get();
+var_dump($get->van);
 
+// $post = $request->post('aa');
+// var_dump($post);
 ?>
