@@ -1,0 +1,7 @@
+RewriteEngine on
+RewriteBase /
+
+#RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+
+RewriteRule $^ /Controller/Request.php
+RewriteRule ^school/insert Controller/School/add.php
