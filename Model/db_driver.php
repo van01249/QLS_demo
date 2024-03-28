@@ -14,22 +14,22 @@ class Db_driver
     private $raw;
     function __construct($data = [])
     {
-        $this->table = isset ($data['table']) ? $data['table'] : '';
-        $this->data = isset ($data['data']) ? $data['data'] : '';
-        $this->where = isset ($data['where']) ? $data['where'] : '';
-        $this->subQuery = isset ($data['subQuery']) ? $data['subQuery'] : '';
-        $this->orderBy = isset ($data['orderBy']) ? $data['orderBy'] : '';
-        $this->having = isset ($data['having']) ? $data['having'] : '';
-        $this->groupBy = isset ($data['groupBy']) ? $data['groupBy'] : '';
-        $this->join = isset ($data['join']) ? $data['join'] : '';
-        $this->sql = isset ($data['sql']) ? $data['sql'] : '';
+        $this->table = isset($data['table']) ? $data['table'] : '';
+        $this->data = isset($data['data']) ? $data['data'] : '';
+        $this->where = isset($data['where']) ? $data['where'] : '';
+        $this->subQuery = isset($data['subQuery']) ? $data['subQuery'] : '';
+        $this->orderBy = isset($data['orderBy']) ? $data['orderBy'] : '';
+        $this->having = isset($data['having']) ? $data['having'] : '';
+        $this->groupBy = isset($data['groupBy']) ? $data['groupBy'] : '';
+        $this->join = isset($data['join']) ? $data['join'] : '';
+        $this->sql = isset($data['sql']) ? $data['sql'] : '';
         $this->connect();
     }
 
     public function connect()
     {
         if (!$this->conn) {
-            $this->conn = mysqli_connect('localhost', 'root', '', 'qls_demo') or die ('Lỗi kết nối database');
+            $this->conn = mysqli_connect('localhost', 'root', '', 'qls_demo') or die('Lỗi kết nối database');
             mysqli_query($this->conn, "SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_database = 'utf', character_set_ser = 'utf8'");
         }
     }
@@ -46,11 +46,11 @@ class Db_driver
     {
         if (!$this->conn)
             $this->connect();
-        var_dump($this->sql);
+
         $query = mysqli_query($this->conn, $this->sql);
 
         if (!$query)
-            die ("ERROR: " . mysqli_error($this->conn));
+            die("ERROR: " . mysqli_error($this->conn));
 
         return $query;
     }
@@ -135,7 +135,7 @@ class Db_driver
 
     public function where(...$data)
     {
-        $this->where .= isset ($this->where) ? " AND " : " WHERE ";
+        $this->where .= isset($this->where) ? " AND " : " WHERE ";
 
         $condition = $data[0];
         if (is_array($condition)) {
@@ -167,7 +167,7 @@ class Db_driver
     {
         $condition = $data[0];
         if (is_array($condition)) {
-            $this->where .= isset ($this->where) ? " AND " : " WHERE ";
+            $this->where .= isset($this->where) ? " AND " : " WHERE ";
             $multiCondition = [];
             foreach ($condition as $key => $val) {
                 $val = addslashes($val);
@@ -176,7 +176,7 @@ class Db_driver
 
             $this->where .= "(" . implode(" OR ", $multiCondition) . ")";
         } else {
-            $this->where .= isset ($this->where) ? " OR " : " WHERE ";
+            $this->where .= isset($this->where) ? " OR " : " WHERE ";
             $length = count($data);
             $column = $data[0];
             if ($length == 2) {
@@ -195,7 +195,7 @@ class Db_driver
 
     public function raw(...$data)
     {
-        $this->where .= isset ($this->where) ? " AND " : " WHERE ";
+        $this->where .= isset($this->where) ? " AND " : " WHERE ";
         $column = $data[0];
         $length = count($data);
         if ($length == 2) {
@@ -213,13 +213,13 @@ class Db_driver
 
     public function whereHas(...$data)
     {
-        $this->where .= isset ($this->where) ? " AND " : " WHERE ";
+        $this->where .= isset($this->where) ? " AND " : " WHERE ";
 
         $table = $data[0];
         $column = $data[1];
-        $condition = isset ($data[2]) ? $data[2] : '';
-        $key = isset ($data[3]) ? $data[3] : '';
-        $foreignKey = isset ($data[4]) ? $data[4] : '';
+        $condition = isset($data[2]) ? $data[2] : '';
+        $key = isset($data[3]) ? $data[3] : '';
+        $foreignKey = isset($data[4]) ? $data[4] : '';
         $multiCondition = [];
         if ($key != '' && $foreignKey != '') {
             $multiCondition[] = " {$key} = {$foreignKey} ";
@@ -243,7 +243,7 @@ class Db_driver
 
     public function whereIn(...$data)
     {
-        $this->where .= isset ($this->where) ? " AND " : " WHERE ";
+        $this->where .= isset($this->where) ? " AND " : " WHERE ";
 
         $condition = $data[0];
         if (is_array($condition)) {
@@ -280,14 +280,14 @@ class Db_driver
     }
     public function groupBy(...$data)
     {
-        $this->groupBy .= isset ($this->groupBy) ? ', ' : " GROUP BY ";
+        $this->groupBy .= isset($this->groupBy) ? ', ' : " GROUP BY ";
         $this->groupBy .= implode(', ', $data);
         return new Db_driver($this->getData());
     }
 
     public function having(...$data)
     {
-        $this->having .= isset ($this->having) ? " AND " : " HAVING ";
+        $this->having .= isset($this->having) ? " AND " : " HAVING ";
         $condition = $data[0];
         if (is_array($condition)) {
             $multiCondition = [];
@@ -316,7 +316,7 @@ class Db_driver
 
     public function orderBy(...$data)
     {
-        $this->orderBy .= isset ($this->orderBy) ? " , " : " ORDER BY ";
+        $this->orderBy .= isset($this->orderBy) ? " , " : " ORDER BY ";
         $condition = $data[0];
         if (is_array($condition)) {
             $multiCondition = [];
@@ -341,8 +341,8 @@ class Db_driver
     protected function conditionJoin($data, $type)
     {
         $table = $data[0];
-        $value1 = isset ($data[1]) ? $data[1] : " {$this->table}.id ";
-        $value2 = isset ($data[2]) ? $data[2] : " {$table}.id ";
+        $value1 = isset($data[1]) ? $data[1] : " {$this->table}.id ";
+        $value2 = isset($data[2]) ? $data[2] : " {$table}.id ";
 
         return " {$type} {$table} ON {$value1} = {$value2} ";
     }
@@ -380,8 +380,7 @@ class Db_driver
         $this->sql .= $this->groupBy;
         $this->sql .= $this->having;
         $this->sql .= $this->orderBy;
-        var_dump($this->sql);
-        die;
+
         $query = $this->query();
         $this->disConnect();
         return $this->list($query);
