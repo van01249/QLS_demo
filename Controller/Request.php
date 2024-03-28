@@ -6,6 +6,7 @@ class Request
     {
         $listValue = (object) ($_GET);
 
+
         return $listValue;
     }
 
@@ -14,6 +15,15 @@ class Request
         $listValue = (object) ($_POST);
 
         return $listValue;
+    }
+
+    function getValue($object, $property)
+    {
+        if (property_exists($object, $property)) {
+            return $object->$property;
+        } else {
+            return null;
+        }
     }
 }
 ?>

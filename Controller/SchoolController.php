@@ -79,12 +79,11 @@ class SchoolController
 
         if (isset($data->id)) {
             $id = $data->id;
-            $detail = $this->school->where('id', $id)->get();
+            $detail = $this->school->where('id', $id)->detail();
 
-            $data = count($detail) > 0 ? $detail[0] : [];
             $this->output->result = true;
             $this->output->message = 'Lấy thông tin thành công!';
-            $this->output->data = $data;
+            $this->output->data = $detail;
         } else {
             $this->output->result = false;
             $this->output->error = "Thiếu thông tin id";
@@ -93,10 +92,13 @@ class SchoolController
         return $this->output->output();
     }
 
-    public function all()
+    public function search()
     {
-        $data = $this->school->all();
+        $data = $this->request->post();
 
+        $data = (array) $data;
+
+        $data = $this->school->where($data)->get();
         $this->output->result = true;
         $this->output->message = 'Lấy thông tin thành công!';
         $this->output->data = $data;
@@ -116,7 +118,7 @@ if ($type == 'add') {
     echo $school->delete();
 } else if ($type == 'detail') {
     echo $school->detail();
-} else if ($type == 'all') {
-    echo $school->all();
+} else if ($type == 'search') {
+    $school->search();
 }
 ?>

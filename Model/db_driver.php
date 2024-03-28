@@ -136,7 +136,7 @@ class Db_driver
     public function where(...$data)
     {
         $this->where .= isset($this->where) ? " AND " : " WHERE ";
-
+        var_dump($data[0]);
         $condition = $data[0];
         if (is_array($condition)) {
             $multiCondition = [];
@@ -384,6 +384,23 @@ class Db_driver
         $query = $this->query();
         $this->disConnect();
         return $this->list($query);
+    }
+
+    public function detail()
+    {
+        $this->sql = "SELECT {$this->data} FROM {$this->table}";
+        $this->sql .= $this->join;
+        $this->sql .= $this->where;
+        $this->sql .= $this->groupBy;
+        $this->sql .= $this->having;
+        $this->sql .= $this->orderBy;
+
+        $query = $this->query();
+        $this->disConnect();
+        $list = $this->list($query);
+
+        $data = count($list) > 0 ? $list[0] : [];
+        return $data;
     }
 
     //Hàm update
