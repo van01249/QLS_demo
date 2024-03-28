@@ -7,7 +7,6 @@ class Book extends Db_driver
     {
         parent::connect();
         $this->table = 'students';
-        $this->data = '*';
     }
 }
 ?>

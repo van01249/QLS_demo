@@ -1,134 +1,122 @@
 <?php
 include ('Request.php');
+include ('Output.php');
 include ("../Model/School.php");
 
-class SchoolController extends Request
+class SchoolController
 {
     private $request;
+    private $output;
     private $school;
-    function __construct()
+    function __construct(Request $request, Output $output, School $school)
     {
-        $this->request = new Request();
-        $this->school = new School();
+        $this->request = $request;
+        $this->output = $output;
+        $this->school = $school;
     }
 
     public function add()
     {
         $data = $this->request->post();
-        $name = isset($data->name) ? $data->name : '';
-        $founded = isset($data->founded) ? $data->founded : '';
-        $address = isset($data->address) ? $data->address : '';
+        $insert = $this->school->insert($data);
 
-        $array = array(
-            'name' => $name,
-            'founded' => $founded,
-            'address' => $address,
-        );
+        $this->output->result = true;
+        $this->output->message = "Thêm thành công";
+        $this->output->data = $insert;
 
-        $insert = $this->school->insert($array);
-
-        $this->result = true;
-        $this->message = "Thêm thành công";
-        $this->data = $insert;
-
-        return parent::output();
+        return $this->output->output();
     }
 
     public function update()
     {
         $data = $this->request->post();
-        $id = isset($data->id) ? $data->id : '';
-        $name = isset($data->name) ? $data->name : '';
-        $founded = isset($data->founded) ? $data->founded : '';
-        $address = isset($data->address) ? $data->address : '';
 
-        if ($id != '') {
-            $array = array(
-                'name' => $name,
-                'founded' => $founded,
-                'address' => $address,
-            );
+        if (isset($data->id)) {
+            $id = $data->id;
 
-            $update = $this->school->where('id', $id)->update($array);
+            $update = $this->school->where('id', $id)->update($data);
             if ($update) {
-                $this->result = true;
-                $this->message = "Cập nhật thành công!";
+                $this->output->result = true;
+                $this->output->message = "Cập nhật thành công!";
             } else {
-                $this->result = false;
-                $this->error = "Có lỗi xảy ra trong quá trình xử lý";
+                $this->output->result = false;
+                $this->output->error = "Có lỗi xảy ra trong quá trình xử lý";
             }
         } else {
-            $this->result = false;
-            $this->error = "Thiếu thông tin id";
+            $this->output->result = false;
+            $this->output->error = "Thiếu thông tin id";
         }
 
-        return parent::output();
+        return $this->output->output();
     }
 
     public function delete()
     {
         $data = $this->request->post();
-        $id = isset($data->id) ? $data->id : '';
 
-        if ($id != '') {
+        if (isset($data->id)) {
+            $id = $data->id;
             $delete = $this->school->where('id', $id)->delete();
 
             if ($delete) {
-                $this->result = true;
-                $this->message = "Xóa thành công!";
+                $this->output->result = true;
+                $this->output->message = "Xóa thành công!";
             } else {
-                $this->result = false;
-                $this->error = "Có lỗi xảy ra trong quá trình xử lý";
+                $this->output->result = false;
+                $this->output->error = "Có lỗi xảy ra trong quá trình xử lý";
             }
         } else {
-            $this->result = false;
-            $this->error = "Thiếu thông tin id";
+            $this->output->result = false;
+            $this->output->error = "Thiếu thông tin id";
         }
 
-        return parent::output();
+        return $this->output->output();
     }
 
     public function detail()
     {
         $data = $this->request->post();
-        $id = isset($data->id) ? $data->id : '';
 
-        if ($id != '') {
+        if (isset($data->id)) {
+            $id = $data->id;
             $detail = $this->school->where('id', $id)->get();
-            $data = $detail[0];
-            $this->result = true;
-            $this->message = 'Lấy thông tin thành công!';
-            $this->data = $data;
+
+            $data = count($detail) > 0 ? $detail[0] : [];
+            $this->output->result = true;
+            $this->output->message = 'Lấy thông tin thành công!';
+            $this->output->data = $data;
         } else {
-            $this->result = false;
-            $this->error = "Thiếu thông tin id";
+            $this->output->result = false;
+            $this->output->error = "Thiếu thông tin id";
         }
 
-        return parent::output();
+        return $this->output->output();
     }
 
     public function all()
     {
         $data = $this->school->all();
-        $this->result = true;
-        $this->message = 'Lấy thông tin thành công!';
-        $this->data = $data;
 
-        return parent::output();
+        $this->output->result = true;
+        $this->output->message = 'Lấy thông tin thành công!';
+        $this->output->data = $data;
+
+        return $this->output->output();
     }
 }
 
 $type = $_GET['type'];
-$school = new SchoolController();
+
+$school = new SchoolController(new Request, new Output, new School);
 if ($type == 'add') {
-    $school->add();
+    echo $school->add();
 } else if ($type == 'update') {
-    $school->update();
+    echo $school->update();
 } else if ($type == 'delete') {
-    $school->delete();
+    echo $school->delete();
 } else if ($type == 'detail') {
-    $school->detail();
+    echo $school->detail();
 } else if ($type == 'all') {
-    $school->all();
+    echo $school->all();
 }
 ?>

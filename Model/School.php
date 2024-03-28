@@ -6,7 +6,6 @@ class School extends Db_driver
     {
         parent::connect();
         $this->table = 'school';
-        $this->data = '*';
     }
 }
 

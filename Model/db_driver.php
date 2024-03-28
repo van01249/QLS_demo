@@ -3,7 +3,7 @@ class Db_driver
 {
     private $conn;
     protected $table;
-    protected $data;
+    protected $data = '*';
     private $where;
     private $subQuery;
     private $orderBy;
@@ -15,7 +15,7 @@ class Db_driver
     function __construct($data = [])
     {
         $this->table = isset($data['table']) ? $data['table'] : '';
-        $this->data = isset($data['data']) ? $data['data'] : '';
+        $this->data = isset($data['data']) ? $data['data'] : '*';
         $this->where = isset($data['where']) ? $data['where'] : '';
         $this->subQuery = isset($data['subQuery']) ? $data['subQuery'] : '';
         $this->orderBy = isset($data['orderBy']) ? $data['orderBy'] : '';
