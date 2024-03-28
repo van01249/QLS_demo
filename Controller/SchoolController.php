@@ -31,7 +31,7 @@ class SchoolController extends Request
         $this->message = "Thêm thành công";
         $this->data = $insert;
 
-        return parent::result();
+        return parent::output();
     }
 
     public function update()
@@ -62,8 +62,7 @@ class SchoolController extends Request
             $this->error = "Thiếu thông tin id";
         }
 
-
-        return parent::result();
+        return parent::output();
     }
 
     public function delete()
@@ -86,7 +85,7 @@ class SchoolController extends Request
             $this->error = "Thiếu thông tin id";
         }
 
-        return parent::result();
+        return parent::output();
     }
 
     public function detail()
@@ -105,7 +104,7 @@ class SchoolController extends Request
             $this->error = "Thiếu thông tin id";
         }
 
-        return parent::result();
+        return parent::output();
     }
 
     public function all()
@@ -115,7 +114,7 @@ class SchoolController extends Request
         $this->message = 'Lấy thông tin thành công!';
         $this->data = $data;
 
-        return parent::result();
+        return parent::output();
     }
 }
 

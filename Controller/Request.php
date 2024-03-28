@@ -19,7 +19,7 @@ class Request
         return $listValue;
     }
 
-    function result()
+    function output()
     {
         $result = [];
         $result['result'] = $this->result;
