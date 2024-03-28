@@ -6,7 +6,7 @@ class Students extends Db_driver
     function __construct()
     {
         parent::connect();
-        $this->table = "books";
+        $this->table = "students";
     }
 }
 ?>

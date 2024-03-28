@@ -135,20 +135,27 @@ class Db_driver
 
     public function where(...$data)
     {
-        $this->where .= isset($this->where) ? " AND " : " WHERE ";
-        var_dump($data[0]);
-        $condition = $data[0];
-        if (is_array($condition)) {
+        $condition = isset($data[0]) ? $data[0] : '';
+        $length = count($data);
+
+        if (is_array($condition) && count($condition) > 0) {
+            $this->where .= $this->where ? " AND " : " WHERE ";
             $multiCondition = [];
             foreach ($condition as $key => $val) {
                 $val = addslashes($val);
-                $multiCondition[] = "{$key} = '{$val}'";
+                if ($key == 'id') {
+                    $multiCondition[] = "{$this->table}.{$key} = '{$val}'";
+                } else {
+                    $multiCondition[] = "{$key} = '{$val}'";
+                }
+
             }
 
             $this->where .= "(" . implode(" AND ", $multiCondition) . ")";
-        } else {
-            $length = count($data);
-            $column = $data[0];
+
+        } else if ($length > 1) {
+            $this->where .= $this->where ? " AND " : " WHERE ";
+            $column = $data[0] == 'id' ? "{$this->table}.{$data[0]}" : $data[0];
             if ($length == 2) {
                 $operator = "=";
                 $value = addslashes($data[1]);
@@ -165,20 +172,25 @@ class Db_driver
 
     public function whereOr(...$data)
     {
-        $condition = $data[0];
-        if (is_array($condition)) {
-            $this->where .= isset($this->where) ? " AND " : " WHERE ";
+        $condition = isset($data[0]) ? $data[0] : '';
+        $length = count($data);
+        if (is_array($condition) && count($condition) > 0) {
+            $this->where .= ($this->where) ? " AND " : " WHERE ";
             $multiCondition = [];
             foreach ($condition as $key => $val) {
                 $val = addslashes($val);
-                $multiCondition[] = "{$key} = '{$val}'";
+                if ($key == 'id') {
+                    $multiCondition[] = "{$this->table}.{$key} = '{$val}'";
+                } else {
+                    $multiCondition[] = "{$key} = '{$val}'";
+                }
             }
 
             $this->where .= "(" . implode(" OR ", $multiCondition) . ")";
-        } else {
-            $this->where .= isset($this->where) ? " OR " : " WHERE ";
+        } else if ($length > 1) {
+            $this->where .= ($this->where) ? " OR " : " WHERE ";
             $length = count($data);
-            $column = $data[0];
+            $column = $data[0] == 'id' ? "{$this->table}.{$data[0]}" : $data[0];
             if ($length == 2) {
                 $operator = "=";
                 $value = addslashes($data[1]);
@@ -190,13 +202,15 @@ class Db_driver
             $this->where .= " {$column} {$operator} {$value} ";
         }
 
+
         return new Db_driver($this->getData());
     }
 
     public function raw(...$data)
     {
+
         $this->where .= isset($this->where) ? " AND " : " WHERE ";
-        $column = $data[0];
+        $column = $data[0] == 'id' ? "{$this->table}.{$data[0]}" : $data[0];
         $length = count($data);
         if ($length == 2) {
             $operator = "=";
@@ -243,10 +257,11 @@ class Db_driver
 
     public function whereIn(...$data)
     {
-        $this->where .= isset($this->where) ? " AND " : " WHERE ";
+        $condition = isset($data[0]) ? $data[0] : '';
+        $length = count($data);
+        if (is_array($condition) && count($condition) > 0) {
+            $this->where .= isset($this->where) ? " AND " : " WHERE ";
 
-        $condition = $data[0];
-        if (is_array($condition)) {
             $multiCondition = [];
             foreach ($condition as $key => $val) {
                 if (is_array($val)) {
@@ -256,12 +271,18 @@ class Db_driver
                 }
 
                 $val = "(" . implode(", ", $val) . ")";
-                $multiCondition[] = "{$key} IN {$val}";
+                if ($key == 'id') {
+                    $multiCondition[] = "{$this->table}.{$key} IN {$val}";
+                } else {
+                    $multiCondition[] = "{$key} IN {$val}";
+                }
+
             }
 
             $this->where .= "(" . implode(" AND ", $multiCondition) . ")";
-        } else {
-            $column = $data[0];
+        } else if ($length > 1) {
+            $this->where .= isset($this->where) ? " AND " : " WHERE ";
+            $column = $data[0] == 'id' ? "{$this->table}.{$data[0]}" : $data[0];
 
             $operator = "IN";
             $value = $data[1];
@@ -280,26 +301,35 @@ class Db_driver
     }
     public function groupBy(...$data)
     {
+
         $this->groupBy .= isset($this->groupBy) ? ', ' : " GROUP BY ";
         $this->groupBy .= implode(', ', $data);
+
         return new Db_driver($this->getData());
     }
 
     public function having(...$data)
     {
-        $this->having .= isset($this->having) ? " AND " : " HAVING ";
         $condition = $data[0];
+
+        $this->having .= isset($this->having) ? " AND " : " HAVING ";
+
         if (is_array($condition)) {
             $multiCondition = [];
             foreach ($condition as $key => $val) {
                 $val = addslashes($val);
-                $multiCondition[] = "{$key} = '{$val}'";
+                if ($key == 'id') {
+                    $multiCondition[] = "{$this->table}.{$key} = '{$val}'";
+                } else {
+                    $multiCondition[] = "{$key} = '{$val}'";
+                }
+
             }
 
             $this->where .= "(" . implode(" AND ", $multiCondition) . ")";
         } else {
             $length = count($data);
-            $column = $data[0];
+            $column = $data[0] == 'id' ? "{$this->table}.{$data[0]}" : $data[0];
             if ($length == 2) {
                 $operator = "=";
                 $value = addslashes($data[1]);
@@ -316,12 +346,19 @@ class Db_driver
 
     public function orderBy(...$data)
     {
-        $this->orderBy .= isset($this->orderBy) ? " , " : " ORDER BY ";
         $condition = $data[0];
+
+        $this->orderBy .= isset($this->orderBy) ? " , " : " ORDER BY ";
+
         if (is_array($condition)) {
             $multiCondition = [];
             foreach ($condition as $key => $val) {
-                $multiCondition[] = " {$key} {$val} ";
+                if ($key == 'id') {
+                    $multiCondition[] = " {$this->table}.{$key} {$val} ";
+                } else {
+                    $multiCondition[] = " {$key} {$val} ";
+                }
+
             }
 
             $this->orderBy .= implode(', ', $multiCondition);
@@ -341,8 +378,8 @@ class Db_driver
     protected function conditionJoin($data, $type)
     {
         $table = $data[0];
-        $value1 = isset($data[1]) ? $data[1] : " {$this->table}.id ";
-        $value2 = isset($data[2]) ? $data[2] : " {$table}.id ";
+        $value1 = isset($data[1]) ? "{$this->table}.{$data[1]}" : " {$this->table}.id ";
+        $value2 = isset($data[2]) ? "{$table}.{$data[2]}" : " {$table}.id ";
 
         return " {$type} {$table} ON {$value1} = {$value2} ";
     }

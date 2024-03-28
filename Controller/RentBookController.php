@@ -1,24 +1,32 @@
 <?php
 include ('Request.php');
 include ('Output.php');
-include ("../Model/School.php");
+include ("../Model/RentBook.php");
 
-class SchoolController
+class RentBookController
 {
-    private $request;
-    private $output;
-    private $school;
-    function __construct(Request $request, Output $output, School $school)
+    protected $request;
+    protected $output;
+    protected $rentBook;
+
+    function __construct(Request $request, Output $output, RentBook $rentBook)
     {
         $this->request = $request;
         $this->output = $output;
-        $this->school = $school;
+        $this->rentBook = $rentBook;
     }
 
     public function add()
     {
         $data = $this->request->post();
-        $insert = $this->school->insert($data);
+
+        foreach ($data as $key => $val) {
+            if ($key == 'date_rent') {
+                $data->$key = strtotime($val);
+            }
+        }
+
+        $insert = $this->rentBook->insert($data);
 
         $this->output->result = true;
         $this->output->message = "Thêm thành công";
@@ -34,7 +42,7 @@ class SchoolController
         if (isset($data->id)) {
             $id = $data->id;
             $data = (array) $data;
-            $update = $this->school->where('id', $id)->update($data);
+            $update = $this->rentBook->where('id', $id)->update($data);
             if ($update) {
                 $this->output->result = true;
                 $this->output->message = "Cập nhật thành công!";
@@ -56,7 +64,7 @@ class SchoolController
 
         if (isset($data->id)) {
             $id = $data->id;
-            $delete = $this->school->where('id', $id)->delete();
+            $delete = $this->rentBook->where('id', $id)->delete();
 
             if ($delete) {
                 $this->output->result = true;
@@ -79,7 +87,7 @@ class SchoolController
 
         if (isset($data->id)) {
             $id = $data->id;
-            $detail = $this->school->where('id', $id)->detail();
+            $detail = $this->rentBook->join('books', 'id_book', 'id')->join('students', 'id_student', 'id')->where('rentBooks.id', $id)->select('*, rentBooks.id as rentBook_id')->detail();
 
             $this->output->result = true;
             $this->output->message = 'Lấy thông tin thành công!';
@@ -98,7 +106,7 @@ class SchoolController
 
         $data = (array) $data;
 
-        $data = $this->school->where($data)->get();
+        $data = $this->rentBook->join('books', 'id_book', 'id')->join('students', 'id_student', 'id')->where($data)->select('*, rentBooks.id as rentBook_id')->get();
         $this->output->result = true;
         $this->output->message = 'Lấy thông tin thành công!';
         $this->output->data = $data;
@@ -109,16 +117,16 @@ class SchoolController
 
 $type = $_GET['type'];
 
-$school = new SchoolController(new Request, new Output, new School);
+$rentBook = new RentBookController(new Request, new Output, new RentBook);
 if ($type == 'add') {
-    echo $school->add();
+    echo $rentBook->add();
 } else if ($type == 'update') {
-    echo $school->update();
+    echo $rentBook->update();
 } else if ($type == 'delete') {
-    echo $school->delete();
+    echo $rentBook->delete();
 } else if ($type == 'detail') {
-    echo $school->detail();
+    echo $rentBook->detail();
 } else if ($type == 'search') {
-    echo $school->search();
+    echo $rentBook->search();
 }
 ?>

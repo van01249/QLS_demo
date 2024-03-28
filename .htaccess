@@ -5,3 +5,6 @@ RewriteBase /
 
 RewriteRule $^ /Controller/Request.php
 RewriteRule ^school Controller/SchoolController.php
+RewriteRule ^student Controller/StudentController.php
+RewriteRule ^book Controller/BookController.php
+RewriteRule ^rentBook Controller/RentBookController.php

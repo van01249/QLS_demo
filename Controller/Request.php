@@ -17,13 +17,5 @@ class Request
         return $listValue;
     }
 
-    function getValue($object, $property)
-    {
-        if (property_exists($object, $property)) {
-            return $object->$property;
-        } else {
-            return null;
-        }
-    }
 }
 ?>

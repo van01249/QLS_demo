@@ -1,24 +1,24 @@
 <?php
 include ('Request.php');
 include ('Output.php');
-include ("../Model/School.php");
+include ("../Model/Book.php");
 
-class SchoolController
+class BookController
 {
     private $request;
     private $output;
-    private $school;
-    function __construct(Request $request, Output $output, School $school)
+    private $book;
+    function __construct(Request $request, Output $output, Book $book)
     {
         $this->request = $request;
         $this->output = $output;
-        $this->school = $school;
+        $this->book = $book;
     }
 
     public function add()
     {
         $data = $this->request->post();
-        $insert = $this->school->insert($data);
+        $insert = $this->book->insert($data);
 
         $this->output->result = true;
         $this->output->message = "Thêm thành công";
@@ -34,7 +34,7 @@ class SchoolController
         if (isset($data->id)) {
             $id = $data->id;
             $data = (array) $data;
-            $update = $this->school->where('id', $id)->update($data);
+            $update = $this->book->where('id', $id)->update($data);
             if ($update) {
                 $this->output->result = true;
                 $this->output->message = "Cập nhật thành công!";
@@ -56,7 +56,7 @@ class SchoolController
 
         if (isset($data->id)) {
             $id = $data->id;
-            $delete = $this->school->where('id', $id)->delete();
+            $delete = $this->book->where('id', $id)->delete();
 
             if ($delete) {
                 $this->output->result = true;
@@ -79,7 +79,7 @@ class SchoolController
 
         if (isset($data->id)) {
             $id = $data->id;
-            $detail = $this->school->where('id', $id)->detail();
+            $detail = $this->book->where('id', $id)->detail();
 
             $this->output->result = true;
             $this->output->message = 'Lấy thông tin thành công!';
@@ -98,7 +98,7 @@ class SchoolController
 
         $data = (array) $data;
 
-        $data = $this->school->where($data)->get();
+        $data = $this->book->where($data)->get();
         $this->output->result = true;
         $this->output->message = 'Lấy thông tin thành công!';
         $this->output->data = $data;
@@ -109,16 +109,16 @@ class SchoolController
 
 $type = $_GET['type'];
 
-$school = new SchoolController(new Request, new Output, new School);
+$book = new bookController(new Request, new Output, new Book);
 if ($type == 'add') {
-    echo $school->add();
+    echo $book->add();
 } else if ($type == 'update') {
-    echo $school->update();
+    echo $book->update();
 } else if ($type == 'delete') {
-    echo $school->delete();
+    echo $book->delete();
 } else if ($type == 'detail') {
-    echo $school->detail();
+    echo $book->detail();
 } else if ($type == 'search') {
-    echo $school->search();
+    echo $book->search();
 }
 ?>
