@@ -57,19 +57,6 @@ class Db_driver
         return $query;
     }
 
-    protected function list($query)
-    {
-        $list = [];
-
-        if ($query && mysqli_num_rows($query) > 0) {
-            while ($row = mysqli_fetch_object($query)) {
-                $list[] = $row;
-            }
-        }
-
-        return $list;
-    }
-
     //Hàm search
     public function all()
     {
@@ -428,7 +415,7 @@ class Db_driver
         return new Db_driver($this->getData());
     }
 
-    public function get()
+    public function sql()
     {
         $this->sql = "SELECT {$this->data} FROM {$this->table}";
         $this->sql .= $this->join;
@@ -440,25 +427,38 @@ class Db_driver
 
         $query = $this->query();
         $this->disConnect();
-        return $this->list($query);
+
+        return $query;
+    }
+
+    public function get()
+    {
+        $query = $this->sql();
+
+        $list = [];
+
+        if ($query && mysqli_num_rows($query) > 0) {
+            while ($row = mysqli_fetch_object($query)) {
+                $list[] = $row;
+            }
+        }
+
+        return $list;
     }
 
     public function first()
     {
-        $this->sql = "SELECT {$this->data} FROM {$this->table}";
-        $this->sql .= $this->join;
-        $this->sql .= $this->where;
-        $this->sql .= $this->groupBy;
-        $this->sql .= $this->having;
-        $this->sql .= " LIMIT 1 ";
-        $this->sql .= $this->orderBy;
+        $this->limit = " LIMIT 1 ";
 
-        $query = $this->query();
+        $query = $this->sql();
+
         $this->disConnect();
-        $list = $this->list($query);
-        $list = isset($list[0]) ? $list[0] : [];
 
-        return $list;
+        if ($query && mysqli_num_rows($query) > 0) {
+            return mysqli_fetch_object($query);
+        }
+
+        return [];
     }
 
     //Hàm update
