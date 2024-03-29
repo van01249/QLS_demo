@@ -9,6 +9,7 @@ class Db_driver
     private $orderBy;
     private $having;
     private $groupBy;
+    private $limit;
     private $join;
     private $sql;
     private $raw;
@@ -23,6 +24,7 @@ class Db_driver
         $this->groupBy = isset($data['groupBy']) ? $data['groupBy'] : '';
         $this->join = isset($data['join']) ? $data['join'] : '';
         $this->sql = isset($data['sql']) ? $data['sql'] : '';
+        $this->limit = isset($data['limit']) ? $data['limit'] : '';
         $this->connect();
     }
 
@@ -127,6 +129,7 @@ class Db_driver
             'having' => $this->having,
             'groupBy' => $this->groupBy,
             'join' => $this->join,
+            'limit' => $this->limit,
             'sql' => $this->sql,
         );
 
@@ -369,6 +372,22 @@ class Db_driver
         return new Db_driver($this->getData());
     }
 
+    public function limit(...$data)
+    {
+        $count = count($data);
+
+        if ($count > 0) {
+            $this->limit = " LIMIT ";
+            if ($count == 1) {
+                $this->limit .= $data[0];
+            } else {
+                $this->limit .= " {$data[0]} OFFSET {$data[1]} ";
+            }
+        }
+
+        return new Db_driver($this->getData());
+    }
+
     public function select($data)
     {
         $this->data = $data;
@@ -416,6 +435,7 @@ class Db_driver
         $this->sql .= $this->where;
         $this->sql .= $this->groupBy;
         $this->sql .= $this->having;
+        $this->sql .= $this->limit;
         $this->sql .= $this->orderBy;
 
         $query = $this->query();
@@ -423,21 +443,22 @@ class Db_driver
         return $this->list($query);
     }
 
-    public function detail()
+    public function first()
     {
         $this->sql = "SELECT {$this->data} FROM {$this->table}";
         $this->sql .= $this->join;
         $this->sql .= $this->where;
         $this->sql .= $this->groupBy;
         $this->sql .= $this->having;
+        $this->sql .= " LIMIT 1 ";
         $this->sql .= $this->orderBy;
 
         $query = $this->query();
         $this->disConnect();
         $list = $this->list($query);
+        $list = isset($list[0]) ? $list[0] : [];
 
-        $data = count($list) > 0 ? $list[0] : [];
-        return $data;
+        return $list;
     }
 
     //Hàm update

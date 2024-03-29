@@ -87,7 +87,7 @@ class RentBookController
 
         if (isset($data->id)) {
             $id = $data->id;
-            $detail = $this->rentBook->join('books', 'id_book', 'id')->join('students', 'id_student', 'id')->where('rentBooks.id', $id)->select('*, rentBooks.id as rentBook_id')->detail();
+            $detail = $this->rentBook->join('books', 'id_book', 'id')->join('students', 'id_student', 'id')->where('rentBooks.id', $id)->select('*, rentBooks.id as rentBook_id')->first();
 
             $this->output->result = true;
             $this->output->message = 'Lấy thông tin thành công!';

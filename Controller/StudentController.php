@@ -80,7 +80,7 @@ class StudentController
 
         if (isset($data->id)) {
             $id = $data->id;
-            $detail = $this->students->where('id', $id)->detail();
+            $detail = $this->students->where('id', $id)->first();
 
             $this->output->result = true;
             $this->output->message = 'Lấy thông tin thành công!';

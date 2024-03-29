@@ -79,7 +79,7 @@ class BookController
 
         if (isset($data->id)) {
             $id = $data->id;
-            $detail = $this->book->where('id', $id)->detail();
+            $detail = $this->book->where('id', $id)->first();
 
             $this->output->result = true;
             $this->output->message = 'Lấy thông tin thành công!';
