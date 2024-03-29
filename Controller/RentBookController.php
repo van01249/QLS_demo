@@ -41,14 +41,16 @@ class RentBookController
 
         if (isset($data->id)) {
             $id = $data->id;
+            unset($data->id);
             $data = (array) $data;
+
             $update = $this->rentBook->where('id', $id)->update($data);
             if ($update) {
                 $this->output->result = true;
                 $this->output->message = "Cập nhật thành công!";
             } else {
                 $this->output->result = false;
-                $this->output->error = "Có lỗi xảy ra trong quá trình xử lý";
+                $this->output->error = "Thiếu dữ liệu cập nhật";
             }
         } else {
             $this->output->result = false;
@@ -87,7 +89,7 @@ class RentBookController
 
         if (isset($data->id)) {
             $id = $data->id;
-            $detail = $this->rentBook->join('books', 'id_book', 'id')->join('students', 'id_student', 'id')->where('rentBooks.id', $id)->select('*, rentBooks.id as rentBook_id')->first();
+            $detail = $this->rentBook->join()->where('rentBooks.id', $id)->select('*, rentBooks.id as rentBook_id')->first();
 
             $this->output->result = true;
             $this->output->message = 'Lấy thông tin thành công!';

@@ -34,6 +34,7 @@ class StudentController
 
         if (isset($data->id)) {
             $id = $data->id;
+            unset($data->id);
             $data = (array) $data;
             $update = $this->students->where('id', $id)->update($data);
             if ($update) {
@@ -41,7 +42,7 @@ class StudentController
                 $this->output->message = "Cập nhật thành công!";
             } else {
                 $this->output->result = false;
-                $this->output->error = "Có lỗi xảy ra trong quá trình xử lý";
+                $this->output->error = "Thiếu dữ liệu cập nhật";
             }
         } else {
             $this->output->result = false;
