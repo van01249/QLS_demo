@@ -167,7 +167,7 @@ class Db_driver
                 $this->where .= "(" . implode(" OR ", $multiCondition) . ")";
             } else {
                 $this->where .= ($this->where) ? " OR " : " WHERE ";
-                $length = count($data);
+
                 $column = $data[0] == 'id' ? "{$this->table}.{$data[0]}" : $data[0];
                 if ($length == 2) {
                     $operator = "=";
@@ -212,7 +212,6 @@ class Db_driver
                 $this->where .= "(" . implode(" AND ", $multiCondition) . ")";
             } else {
                 $column = $data[0] == 'id' ? "{$this->table}.{$data[0]}" : $data[0];
-
                 $operator = "IN";
                 $value = $data[1];
                 if (is_array($value)) {
@@ -312,7 +311,6 @@ class Db_driver
                     } else {
                         $multiCondition[] = "{$key} = '{$val}'";
                     }
-
                 }
 
                 $this->where .= "(" . implode(" AND ", $multiCondition) . ")";
